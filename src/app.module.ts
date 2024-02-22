@@ -2,9 +2,13 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { CategoryModule } from './category/category.module';
+
 import { getPostgresConfig } from './configs/postgres.config';
-import { PromoModule } from './promo/promo.module';
+
+import { UsersModule } from './users/users.module';
+import { TextsModule } from './texts/texts.module';
+import { BasketModule } from './basket/basket.module';
+import { AudioModule } from './audio/audio.module';
 
 @Module({
   imports: [
@@ -16,8 +20,14 @@ import { PromoModule } from './promo/promo.module';
       inject: [ConfigService],
       useFactory: getPostgresConfig,
     }),
-    CategoryModule,
-    PromoModule,
+
+    UsersModule,
+
+    TextsModule,
+
+    BasketModule,
+
+    AudioModule,
   ],
   controllers: [],
   providers: [],
