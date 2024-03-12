@@ -25,6 +25,9 @@ export class userEntity {
   @Column()
   tokens: number;
 
+  @Column()
+  role: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 }

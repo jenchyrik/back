@@ -9,6 +9,8 @@ import { UsersModule } from './users/users.module';
 import { TextsModule } from './texts/texts.module';
 import { BasketModule } from './basket/basket.module';
 import { AudioModule } from './audio/audio.module';
+import { AuthModule } from './auth/auth.module';
+import { CategoryModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -28,6 +30,7 @@ import { AudioModule } from './audio/audio.module';
     BasketModule,
 
     AudioModule,
+    CategoryModule,
   ],
   controllers: [],
   providers: [],
