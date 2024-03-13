@@ -11,6 +11,8 @@ import { BasketModule } from './basket/basket.module';
 import { AudioModule } from './audio/audio.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './categories/categories.module';
+import { RolesModule } from './roles/roles.module';
+import { PayStatusModule } from './pay-status/pay-status.module';
 
 @Module({
   imports: [
@@ -28,9 +30,11 @@ import { CategoryModule } from './categories/categories.module';
     TextsModule,
 
     BasketModule,
-
+    RolesModule,
     AudioModule,
     CategoryModule,
+    RolesModule,
+    PayStatusModule,
   ],
   controllers: [],
   providers: [],

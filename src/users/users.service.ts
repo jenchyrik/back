@@ -12,8 +12,7 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<userEntity> {
-    const { name, surname, tokens, createdAt, email, password, role } =
-      createUserDto;
+    const { name, surname, tokens, createdAt, email, password } = createUserDto;
     const user = new userEntity();
     user.name = name;
     user.surname = surname;
@@ -21,7 +20,6 @@ export class UsersService {
     user.createdAt = createdAt;
     user.email = email;
     user.password = password;
-    user.role = role;
 
     return this.userRepository.save(user);
   }
@@ -36,15 +34,13 @@ export class UsersService {
 
   async update(id: number, updateUserDto: CreateUserDto): Promise<userEntity> {
     const user = await this.userRepository.findOne({ where: { id } });
-    const { name, surname, tokens, createdAt, email, password, role } =
-      updateUserDto;
+    const { name, surname, tokens, createdAt, email, password } = updateUserDto;
     user.name = name;
     user.surname = surname;
     user.tokens = tokens;
     user.createdAt = createdAt;
     user.email = email;
     user.password = password;
-    user.role = role;
 
     return this.userRepository.save(user);
   }

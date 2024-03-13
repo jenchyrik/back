@@ -1,7 +1,13 @@
+import { RoleEntity } from 'src/roles/entities/roles.entity';
+import { textEntity } from 'src/texts/entities/text.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -25,9 +31,16 @@ export class userEntity {
   @Column()
   tokens: number;
 
-  @Column()
-  role: string;
-
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
+
+  @OneToMany(() => textEntity, (text) => text.user)
+  text: textEntity[];
+
+  @ManyToOne(() => textEntity, (text) => text.userId)
+  texts: textEntity[];
+
+  @OneToOne(() => RoleEntity)
+  @JoinColumn()
+  role: RoleEntity;
 }

@@ -1,7 +1,12 @@
+import { CategoryEntity } from 'src/categories/entities/category.entity';
+import { userEntity } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -24,4 +29,13 @@ export class textEntity {
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
+
+  @ManyToOne(() => CategoryEntity, (category) => category.texts)
+  category: CategoryEntity;
+
+  @ManyToOne(() => userEntity, (user) => user.text)
+  user: userEntity;
+
+  @OneToMany(() => userEntity, (user) => user.texts)
+  userId: userEntity;
 }
