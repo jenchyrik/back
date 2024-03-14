@@ -13,6 +13,8 @@ import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './categories/categories.module';
 import { RolesModule } from './roles/roles.module';
 import { PayStatusModule } from './pay-status/pay-status.module';
+import { CommentsModule } from './comments/comments.module';
+import { LikesModule } from './likes/likes.module';
 
 @Module({
   imports: [
@@ -26,7 +28,8 @@ import { PayStatusModule } from './pay-status/pay-status.module';
     }),
 
     UsersModule,
-
+    CommentsModule,
+    LikesModule,
     TextsModule,
 
     BasketModule,
@@ -35,6 +38,8 @@ import { PayStatusModule } from './pay-status/pay-status.module';
     CategoryModule,
     RolesModule,
     PayStatusModule,
+    CommentsModule,
+    LikesModule,
   ],
   controllers: [],
   providers: [],

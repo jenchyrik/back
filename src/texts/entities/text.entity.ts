@@ -1,4 +1,5 @@
 import { CategoryEntity } from 'src/categories/entities/category.entity';
+import { LikeEntity } from 'src/likes/entities/like.entity';
 import { userEntity } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -33,9 +34,9 @@ export class textEntity {
   @ManyToOne(() => CategoryEntity, (category) => category.texts)
   category: CategoryEntity;
 
-  @ManyToOne(() => userEntity, (user) => user.text)
+  @ManyToOne(() => userEntity, (user) => user.texts)
   user: userEntity;
 
-  @OneToMany(() => userEntity, (user) => user.texts)
-  userId: userEntity;
+  @OneToMany(() => LikeEntity, (like) => like.text)
+  likes: LikeEntity[];
 }

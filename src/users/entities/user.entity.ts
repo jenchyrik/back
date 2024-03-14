@@ -1,3 +1,5 @@
+import { CommentEntity } from 'src/comments/entities/comment.entity';
+import { LikeEntity } from 'src/likes/entities/like.entity';
 import { RoleEntity } from 'src/roles/entities/roles.entity';
 import { textEntity } from 'src/texts/entities/text.entity';
 import {
@@ -34,11 +36,14 @@ export class userEntity {
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @OneToMany(() => textEntity, (text) => text.user)
-  text: textEntity[];
-
-  @ManyToOne(() => textEntity, (text) => text.userId)
+  @ManyToOne(() => textEntity, (text) => text.user)
   texts: textEntity[];
+
+  @ManyToOne(() => CommentEntity, (comment) => comment.user)
+  comments: CommentEntity[];
+
+  @OneToMany(() => LikeEntity, (like) => like.user)
+  likes: LikeEntity[];
 
   @OneToOne(() => RoleEntity)
   @JoinColumn()
