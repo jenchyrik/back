@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
-import { CategoryEntity } from 'src/category/entities/category.entity';
+import { CategoryEntity } from 'src/categories/entities/category.entity';
 
 @Injectable()
 export class ProductService {
@@ -26,7 +26,6 @@ export class ProductService {
     product.image = image.filename;
     product.name = dto.name;
     product.description = dto.description;
-    product.sizes = dto.sizes.split(',').map((x) => +x);
     product.prices = dto.prices.split(',').map((x) => +x);
 
     const newProduct = await this.productRepository.save(product);
@@ -44,11 +43,26 @@ export class ProductService {
   }
 
   async findAll(): Promise<ProductEntity[]> {
-    return this.productRepository.find();
+    return this.productRepository.find({
+      relations: {
+        likes: true,
+        comments: { comment_likes: true },
+        category: true,
+        user: true,
+      },
+    });
   }
 
   async findOne(id: number): Promise<ProductEntity> {
-    return this.productRepository.findOneBy({ id });
+    return this.productRepository.findOne({
+      where: { id: id },
+      relations: {
+        category: true,
+        likes: true,
+        comments: { comment_likes: true },
+        user: true,
+      },
+    });
   }
 
   async findByCategoryId(categoryId: number): Promise<ProductEntity[]> {
@@ -70,7 +84,6 @@ export class ProductService {
     }
     if (dto.name) toUpdate.name = dto.name;
     if (dto.description) toUpdate.description = dto.description;
-    if (dto.sizes) toUpdate.sizes = dto.sizes.split(',').map((x) => +x);
     if (dto.prices) toUpdate.prices = dto.prices.split(',').map((x) => +x);
     if (dto.categoryId) {
       const category = await this.categoryRepository.findOne({
