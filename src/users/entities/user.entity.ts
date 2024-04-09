@@ -1,4 +1,3 @@
-import { RoleEntity } from 'src/roles/entities/roles.entity';
 import { ProductEntity } from 'src/product/entities/product.entity';
 import { CommentEntity } from 'src/comments/entities/comment.entity';
 import { LikeEntity } from 'src/likes/entities/like.entity';
@@ -14,6 +13,7 @@ import {
 } from 'typeorm';
 import { CreateCommentLikeDto } from 'src/comment_likes/dto/create-comment_like.dto';
 import { CommentLikeEntity } from 'src/comment_likes/entities/comment_like.entity';
+import { Role } from 'src/role/role.enum';
 
 @Entity('user')
 export class UserEntity {
@@ -47,9 +47,8 @@ export class UserEntity {
   @JoinColumn({ name: 'likes_id' })
   likes: LikeEntity[];
 
-  @ManyToOne(() => RoleEntity, (role) => role.users)
-  @JoinColumn({ name: 'role_id' })
-  role: RoleEntity;
+  @Column({ type: 'enum', enum: Role, default: Role.User })
+  role: Role;
 
   @OneToMany(() => CommentLikeEntity, (commentLike) => commentLike.user)
   @JoinColumn({ name: 'comments_like' })

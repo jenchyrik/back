@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Response,
+  UseGuards
 } from '@nestjs/common';
 import { ApiTags, ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -19,13 +20,22 @@ import { CreatePromoDto } from './dto/create-promo.dto';
 import { UpdatePromoDto } from './dto/update-promo.dto';
 import { PromoEntity } from './entities/promo.entity';
 import { DeleteResult } from 'typeorm';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/role/role.enum';
+import { RolesGuard } from 'src/auth/guards/role.guard';
 
+@ApiBearerAuth('token')
+@UseGuards(JwtAuthGuard)
+@UseGuards(RolesGuard)
 @ApiTags('promo')
 @Controller('promo')
 export class PromoController {
   constructor(private readonly promoService: PromoService) {}
 
   @Post()
+  @Roles(Role.Admin)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: fileStorage }))
   create(
@@ -51,6 +61,7 @@ export class PromoController {
   }
 
   @Patch(':id')
+  @Roles(Role.Admin)
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image', { storage: fileStorage }))
   update(
@@ -62,6 +73,7 @@ export class PromoController {
   }
 
   @Delete(':id')
+  @Roles(Role.Admin)
   remove(@Param('id') id: string): Promise<DeleteResult> {
     return this.promoService.delete(+id);
   }

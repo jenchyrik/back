@@ -8,7 +8,6 @@ import { CategoryModule } from './categories/categories.module';
 import { ProductModule } from './product/product.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
-import { RolesModule } from './roles/roles.module';
 import { LikesModule } from './likes/likes.module';
 import { CommentsModule } from './comments/comments.module';
 import { CommentLikesModule } from './comment_likes/comment_likes.module';
@@ -26,10 +25,8 @@ import { CommentLikesModule } from './comment_likes/comment_likes.module';
     PromoModule,
     ProductModule,
     CategoryModule,
-    RolesModule,
     UsersModule,
     AuthModule,
-    RolesModule,
     LikesModule,
     CommentsModule,
     CommentLikesModule,

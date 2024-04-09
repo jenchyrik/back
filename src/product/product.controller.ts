@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Response,
+  UseGuards
 } from '@nestjs/common';
 import { ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -20,7 +21,15 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { Roles } from 'src/decorators/role.decorator';
+import { Role } from 'src/role/role.enum';
+import { RolesGuard } from 'src/auth/guards/role.guard';
 
+@ApiBearerAuth('token')
+@UseGuards(JwtAuthGuard)
+@UseGuards(RolesGuard)
 @ApiTags('product')
 @Controller('product')
 export class ProductController {

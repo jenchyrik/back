@@ -29,7 +29,6 @@ export class UsersService {
       username: dto.username,
       password: await argon2.hash(dto.password),
       email: dto.email,
-      role: dto.role,
     };
     return await this.repository.save(user);
   }
@@ -37,14 +36,14 @@ export class UsersService {
   async findByUsername(username: string) {
     return this.repository.findOne({
       where: { username: username },
-      relations: { comments: true, likes: true, role: true },
+      relations: { comments: true, likes: true },
     });
   }
 
   async findById(id: number) {
     return this.repository.findOne({
       where: { id: id },
-      relations: { comments: true, likes: true, role: true },
+      relations: { comments: true, likes: true },
     });
   }
 }
