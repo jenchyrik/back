@@ -12,9 +12,6 @@ export class CreateCommentDto {
 
   @ApiProperty({ default: '1' })
   @IsNotEmpty()
-  user: UserEntity;
-
-  @ApiProperty({ default: '1' })
-  @IsNotEmpty()
   product: ProductEntity;
+  user: UserEntity;
 }

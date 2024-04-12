@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { LikesService } from './likes.service';
 import { CreateLikeDto } from './dto/like.dto';
 import { ApiTags } from '@nestjs/swagger';
@@ -18,10 +26,6 @@ export class LikesController {
   @Get('user/:userId')
   findUserLikes(@Param('userId') userId: string) {
     return this.LikesService.findUserLikes(+userId);
-  }
-  @Get('post/:postId')
-  findPostLikes(@Param('postId') postId: string) {
-    return this.LikesService.findPostLikes(+postId);
   }
   @Post()
   createUserLike(@Body() likeDto: CreateLikeDto) {

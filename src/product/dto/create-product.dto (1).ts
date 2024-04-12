@@ -15,16 +15,13 @@ export class CreateProductDto {
   image: Express.Multer.File;
 
   @IsString()
-  name: string = 'Название пиццы';
+  name: string = 'Название';
 
   @IsString()
-  description: string = 'Состав';
+  description: string = 'Описание';
 
   @IsString()
-  sizes: string = '20,30,40';
-
-  @IsString()
-  prices: string = '400,599,700';
+  prices: string = 'цена';
 
   @IsNumberString()
   categoryId: number;

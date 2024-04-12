@@ -15,4 +15,7 @@ export class CreateUserDto {
   @ApiProperty({ default: 'hello@gmail.com' })
   @IsEmail()
   email: string;
+
+  @ApiProperty({ default: { id: '1' } })
+  role: object;
 }

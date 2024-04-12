@@ -2,6 +2,7 @@ import {
   ForbiddenException,
   Injectable,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -21,11 +22,15 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string) {
-    const user = await this.usersService.findByUsername(username);
-    const passwordIsMatch = argon2.verify(user.password, password);
-    if (user && passwordIsMatch) {
-      const { password, ...result } = user;
-      return result;
+    try {
+      const user = await this.usersService.findByUsername(username);
+      const passwordIsMatch = argon2.verify(user.password, password);
+      if (user && passwordIsMatch) {
+        const { password, ...result } = user;
+        return result;
+      }
+    } catch (error) {
+      throw new BadRequestException('User not found');
     }
 
     return null;
@@ -39,8 +44,9 @@ export class AuthService {
 
     try {
       const userData = await this.usersService.create(dto);
-
+      const { password, ...user } = userData;
       return {
+        user,
         token: this.jwtService.sign({ id: userData.id }),
       };
     } catch (err) {
@@ -49,8 +55,10 @@ export class AuthService {
     }
   }
 
-  async login(user: UserEntity) {
+  async login(userData: UserEntity) {
+    const { password, ...user } = userData;
     return {
+      user,
       token: this.jwtService.sign({ id: user.id }),
     };
   }

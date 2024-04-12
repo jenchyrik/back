@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class CommentDto {
-  @IsNotEmpty()
+export class DeleteUserDto {
   @IsString()
-  content: string;
+  @IsNotEmpty()
+  password: string;
 }

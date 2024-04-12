@@ -10,7 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Response,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';

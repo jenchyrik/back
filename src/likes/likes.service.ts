@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { LikeEntity } from './entities/like.entity';
 import { Repository } from 'typeorm';
+import { Errors } from 'src/constants/errors';
 
 @Injectable()
 export class LikesService {
@@ -10,30 +11,21 @@ export class LikesService {
     private readonly LikeRepository: Repository<LikeEntity>,
   ) {}
   async findUserLikes(userId: number) {
-    return await this.LikeRepository.find({
-      where: {
-        user: {
-          id: userId,
+    try {
+      return await this.LikeRepository.find({
+        where: {
+          user: {
+            id: userId,
+          },
         },
-      },
-      relations: {
-        user: true,
-        text: true,
-      },
-    });
-  }
-  async findPostLikes(postId: number) {
-    return await this.LikeRepository.find({
-      where: {
-        text: {
-          id: postId,
+        relations: {
+          user: true,
+          text: true,
         },
-      },
-      relations: {
-        user: true,
-        text: true,
-      },
-    });
+      });
+    } catch (error) {
+      throw new BadRequestException(Errors.SERVER_ERROR);
+    }
   }
   async createUserLike(userId: number, textId: number) {
     const isExist = await this.LikeRepository.findBy({
@@ -47,12 +39,20 @@ export class LikesService {
       user: { id: userId },
       text: { id: textId },
     };
-    return await this.LikeRepository.save(like);
+    try {
+      return await this.LikeRepository.save(like);
+    } catch (error) {
+      throw new BadRequestException(Errors.SERVER_ERROR);
+    }
   }
   async removeUserLike(userId: number, textId: number) {
-    return await this.LikeRepository.delete({
-      user: { id: userId },
-      text: { id: textId },
-    });
+    try {
+      return await this.LikeRepository.delete({
+        user: { id: userId },
+        text: { id: textId },
+      });
+    } catch (error) {
+      throw new BadRequestException(Errors.SERVER_ERROR);
+    }
   }
 }
