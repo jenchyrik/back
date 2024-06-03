@@ -15,13 +15,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { DeleteCommentDto } from './dto/delete-comment.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Roles } from 'src/decorators/role.decorator';
-import { Role } from 'src/role/role.enum';
-import { RolesGuard } from 'src/auth/guards/role.guard';
 
 @ApiBearerAuth('token')
-@UseGuards(JwtAuthGuard)
-@UseGuards(RolesGuard)
 @ApiTags('comments')
 @Controller('comments')
 export class CommentsController {
@@ -36,7 +31,6 @@ export class CommentsController {
   }
 
   @Put()
-  @Roles(Role.Admin)
   update(@Body() updateCommentDto: UpdateCommentDto) {
     return this.commentsService.update(updateCommentDto);
   }

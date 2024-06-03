@@ -4,9 +4,10 @@ import { CommentsService } from './comments.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentEntity } from './entities/comment.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([CommentEntity])],
+  imports: [JwtModule, ConfigModule, TypeOrmModule.forFeature([CommentEntity])],
   controllers: [CommentsController],
   providers: [CommentsService],
 })

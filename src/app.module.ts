@@ -12,6 +12,7 @@ import { LikesModule } from './likes/likes.module';
 import { CommentsModule } from './comments/comments.module';
 import { CommentLikesModule } from './comment_likes/comment_likes.module';
 import { AudioModule } from './audio/audio.module';
+import { RoleModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { AudioModule } from './audio/audio.module';
     CommentsModule,
     CommentLikesModule,
     AudioModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [],

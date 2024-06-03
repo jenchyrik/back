@@ -17,6 +17,8 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import AudioDto from './dto/audio.dto';
 import { createReadStream } from 'fs';
 
+@ApiBearerAuth('token')
+@UseGuards(JwtAuthGuard)
 @ApiTags('Audio')
 @Controller('audio')
 export class AudioController {

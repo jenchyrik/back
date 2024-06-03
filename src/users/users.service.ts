@@ -1,72 +1,99 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
-import * as argon2 from 'argon2';
-import { Errors } from 'src/constants/errors';
-import { DeleteUserDto } from './dto/delete-user.dto';
+import { Repository } from 'typeorm';
+import { BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { config } from 'dotenv';
+import * as dotenv from 'dotenv';
+import { RoleService } from 'src/roles/roles.service';
+config();
 
 @Injectable()
 export class UsersService {
+  private readonly hashSaltRounds: number;
   constructor(
     @InjectRepository(UserEntity)
-    private repository: Repository<UserEntity>,
-  ) {}
+    private readonly repository: Repository<UserEntity>,
+    private readonly roleService: RoleService,
+  ) {
+    this.hashSaltRounds = parseInt(process.env.HASH_SALT_ROUNDS);
+  }
 
-  async create(dto: CreateUserDto) {
-    const existingUser = await this.findByUsername(dto.username);
-    const existingUserByEmail = await this.repository.findOneBy({
-      email: dto.email,
-    });
+  async create(dto: CreateUserDto): Promise<UserEntity> {
+    const existingUser = await this.findByEmail(dto.email);
+
     if (existingUser) {
       throw new BadRequestException(
-        `Пользователь ${dto.username} уже существует`,
+        `Пользователь с email: ${dto.email} уже существует`,
       );
-    } else if (existingUserByEmail) {
-      throw new BadRequestException(`Email ${dto.email} уже существует`);
     }
-    const user = {
-      username: dto.username,
-      password: await argon2.hash(dto.password),
+    dotenv.config();
+
+    // const hashSaltRounds = 10;
+
+    const hashedPassword = await bcrypt.hash(dto.password, this.hashSaltRounds);
+    // const hashedPassword = await bcrypt.hash(dto.password, hashSaltRounds);
+
+    const user = await this.repository.save({
       email: dto.email,
-    };
+      username: dto.username,
+      password: hashedPassword,
+      // password: dto.password,
+    });
+    user.password = hashedPassword;
+    // user.password = dto.password;
+
+    const role = await this.roleService.getRoleByRole('user');
+    user.role = role;
+    await this.repository.save(user);
+
+    return user;
+  }
+
+  async findOne(id: number): Promise<UserEntity> {
     try {
-      return await this.repository.save(user);
-    } catch (error) {
-      throw new BadRequestException(Errors.SERVER_ERROR);
+      const user = await this.repository.findOneBy({ id });
+      return user;
+    } catch {
+      throw new BadRequestException(`no one`);
     }
   }
 
-  async findByUsername(username: string) {
-    return this.repository.findOne({
-      where: { username: username },
-      relations: { comments: true, likes: true },
-    });
+  async findAll() {
+    return this.repository.find();
   }
-  async findById(id: number) {
-    return this.repository.findOne({
-      where: { id: id },
-      relations: { comments: true, likes: true },
+
+  async findByEmail(email: string): Promise<UserEntity> {
+    const user = await this.repository.findOne({
+      relations: {
+        role: true,
+      },
+      where: {
+        email: email,
+      },
     });
+
+    return user;
   }
-  async deleteUser(deleteUser: DeleteUserDto, user) {
+
+  async update(id: number, dto: UpdateUserDto) {
     try {
-      const userData = await this.repository.findOne({
-        where: { id: user.id },
-      });
-      const isPasswordCorrect = await argon2.verify(
-        userData.password,
-        deleteUser.password,
-      );
-      if (isPasswordCorrect) {
-        return await this.repository.delete({ id: user.id });
-      } else {
-        throw new BadRequestException(Errors.PASSWORD_ERROR);
-      }
-    } catch (error) {
-      throw new BadRequestException(Errors.SERVER_ERROR);
+      const user = await this.repository.findOneBy({ id });
+      return await this.repository.update(user.id, dto);
+    } catch {
+      throw new BadRequestException(`no one`);
+    }
+  }
+
+  async delete(id: number) {
+    try {
+      const user = await this.repository.findOneBy({ id });
+      return await this.repository.delete(user.id);
+    } catch {
+      throw new BadRequestException(`netu`);
     }
   }
 }

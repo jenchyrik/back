@@ -4,9 +4,10 @@ import { AudioService } from './audio.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import AudioEntity from './entities/audio.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([AudioEntity])],
+  imports: [JwtModule, ConfigModule, TypeOrmModule.forFeature([AudioEntity])],
   controllers: [AudioController],
   providers: [AudioService],
 })

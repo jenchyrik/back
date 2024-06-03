@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-
+import { JwtModule } from '@nestjs/jwt';
 import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { ProductEntity } from './entities/product.entity';
@@ -10,6 +10,7 @@ import { CategoryEntity } from 'src/categories/entities/category.entity';
 
 @Module({
   imports: [
+    JwtModule,
     ConfigModule,
     TypeOrmModule.forFeature([ProductEntity, CategoryEntity]),
     CategoryModule,

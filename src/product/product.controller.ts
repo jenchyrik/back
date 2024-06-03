@@ -23,13 +23,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ProductEntity } from './entities/product.entity';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { Roles } from 'src/decorators/role.decorator';
-import { Role } from 'src/role/role.enum';
-import { RolesGuard } from 'src/auth/guards/role.guard';
 
 @ApiBearerAuth('token')
-@UseGuards(JwtAuthGuard)
-@UseGuards(RolesGuard)
 @ApiTags('product')
 @Controller('product')
 export class ProductController {
@@ -46,9 +41,9 @@ export class ProductController {
   }
 
   @Get()
-  @ApiQuery({ name: 'categoryId', required: false })
-  findAll(@Query('categoryId') categoryId: number): Promise<ProductEntity[]> {
-    if (categoryId) return this.productService.findByCategoryId(categoryId);
+  @ApiQuery({ name: 'category_id', required: false })
+  findAll(@Query('category_id') category_id: number): Promise<ProductEntity[]> {
+    if (category_id) return this.productService.findByCategoryId(category_id);
     else return this.productService.findAll();
   }
 

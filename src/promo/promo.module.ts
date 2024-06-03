@@ -5,9 +5,10 @@ import { ConfigModule } from '@nestjs/config';
 import { PromoService } from './promo.service';
 import { PromoController } from './promo.controller';
 import { PromoEntity } from './entities/promo.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([PromoEntity])],
+  imports: [JwtModule, ConfigModule, TypeOrmModule.forFeature([PromoEntity])],
   controllers: [PromoController],
   providers: [PromoService],
 })

@@ -1,65 +1,81 @@
 import {
-  ForbiddenException,
-  Injectable,
   BadRequestException,
-  NotFoundException,
+  Injectable,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
-
-import { UserEntity } from '../users/entities/user.entity';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { UsersService } from '../users/users.service';
-
-import * as argon2 from 'argon2';
+import { UsersService } from 'src/users/users.service';
+import * as bcrypt from 'bcrypt';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly userService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string) {
-    try {
-      const user = await this.usersService.findByUsername(username);
-      const passwordIsMatch = argon2.verify(user.password, password);
-      if (user && passwordIsMatch) {
-        const { password, ...result } = user;
-        return result;
-      }
-    } catch (error) {
-      throw new BadRequestException('User not found');
+  async register(registerDto): Promise<any> {
+    const user = await this.userService.create(registerDto);
+
+    const payload1 = { email: user.email, role: user.role };
+    if (user.role == null) {
+      user.email == null;
+      throw new BadRequestException(`Ошибка регистрации`);
     }
-
-    return null;
-  }
-
-  async register(dto: CreateUserDto) {
-    const isCreateUsers = this.configService.get('CREATE_USERS') === 'true';
-    if (!isCreateUsers) {
-      throw new BadRequestException('Запрещено создавать новых пользователей');
-    }
-
-    try {
-      const userData = await this.usersService.create(dto);
-      const { password, ...user } = userData;
-      return {
-        user,
-        token: this.jwtService.sign({ id: userData.id }),
-      };
-    } catch (err) {
-      // throw new ForbiddenException('Ошибка при регистрации');
-      throw new ForbiddenException(err.message);
-    }
-  }
-
-  async login(userData: UserEntity) {
-    const { password, ...user } = userData;
     return {
-      user,
-      token: this.jwtService.sign({ id: user.id }),
+      token: this.jwtService.sign(payload1),
+    };
+  }
+
+  async validateUserByEmail(loginDto: LoginDto): Promise<any> {
+    const user = await this.userService.findByEmail(loginDto.email);
+    if (!user) {
+      return new BadRequestException(`Пользователи не совпадают`);
+    }
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new BadRequestException(`Пароль не верен`);
+    }
+    const payload1 = { email: user.email, role: user.role };
+    return {
+      token: this.jwtService.sign(payload1),
+    };
+  }
+
+  async login(loginDto: LoginDto): Promise<any> {
+    const user = await this.userService.findByEmail(loginDto.email);
+    if (!user) {
+      throw new BadRequestException(`Такого юзера не существует`);
+    }
+
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!isPasswordValid) {
+      throw new BadRequestException(`Неправильно логин или пароль`);
+    }
+    const payload = { email: user.email, role: user.role };
+    return {
+      token: this.jwtService.sign(payload),
+    };
+  }
+
+  async validate(payload: { email: string /* role: string; id: number*/ }) {
+    const user = await this.userService.findByEmail(payload.email);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    return {
+      email: user.email,
+      // role: user.role,
+      // id: user.id,
     };
   }
 }

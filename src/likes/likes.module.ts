@@ -4,9 +4,10 @@ import { LikesService } from './likes.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LikeEntity } from './entities/like.entity';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([LikeEntity])],
+  imports: [JwtModule, ConfigModule, TypeOrmModule.forFeature([LikeEntity])],
   controllers: [LikesController],
   providers: [LikesService],
 })

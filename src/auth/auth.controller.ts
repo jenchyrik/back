@@ -1,41 +1,25 @@
-import {
-  Controller,
-  Request,
-  Post,
-  UseGuards,
-  Body,
-  Get,
-} from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from './dto/register.dto';
+import { LocalStrategy } from './strategies/local-strategy';
 
-import { UserEntity } from '../users/entities/user.entity';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local.guard';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { JwtAuthGuard } from './guards/jwt.guard';
-
+@ApiTags('Auth and login')
 @Controller('auth')
-@ApiTags('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
-  @Post('login')
-  @UseGuards(LocalAuthGuard)
-  @ApiBody({ type: LoginUserDto })
-  async login(@Request() req) {
-    return this.authService.login(req.user as UserEntity);
-  }
+  constructor(private readonly localStrategy: LocalStrategy) {}
 
   @Post('register')
-  register(@Body() dto: CreateUserDto) {
-    return this.authService.register(dto);
+  async register(@Body() registerDto: RegisterDto): Promise<any> {
+    return await this.localStrategy.register(registerDto);
   }
 
-  @Get('profile')
-  @ApiBearerAuth('token')
-  @UseGuards(JwtAuthGuard)
-  getProfile(@Request() req) {
-    return req.user;
+  @Post('login')
+  async login(@Body() loginDto: LoginDto): Promise<any> {
+    const user = await this.localStrategy.login(loginDto);
+    if (!user) {
+      throw new UnauthorizedException('Неправильные учетные данные');
+    }
+    return user;
   }
 }

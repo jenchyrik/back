@@ -4,9 +4,10 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CategoryEntity } from './entities/category.entity';
 import { CategoriesController } from './categories.controller';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [ConfigModule, TypeOrmModule.forFeature([CategoryEntity])],
+  imports: [JwtModule, ConfigModule, TypeOrmModule.forFeature([CategoryEntity])],
   providers: [CategoriesService],
   controllers: [CategoriesController],
 })

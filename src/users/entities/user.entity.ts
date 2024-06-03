@@ -1,6 +1,10 @@
 import { ProductEntity } from 'src/product/entities/product.entity';
 import { CommentEntity } from 'src/comments/entities/comment.entity';
 import { LikeEntity } from 'src/likes/entities/like.entity';
+import { Role } from 'src/roles/entities/role.entity';
+import { CreateCommentLikeDto } from 'src/comment_likes/dto/create-comment_like.dto';
+import { CommentLikeEntity } from 'src/comment_likes/entities/comment_like.entity';
+import AudioEntity from 'src/audio/entities/audio.entity';
 import {
   Column,
   CreateDateColumn,
@@ -11,10 +15,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CreateCommentLikeDto } from 'src/comment_likes/dto/create-comment_like.dto';
-import { CommentLikeEntity } from 'src/comment_likes/entities/comment_like.entity';
-import AudioEntity from 'src/audio/entities/audio.entity';
-import { Role } from 'src/role/role.enum';
 
 @Entity('user')
 export class UserEntity {
@@ -57,9 +57,6 @@ export class UserEntity {
   @JoinColumn({ name: 'likes_id' })
   likes: LikeEntity[];
 
-  @Column({ type: 'enum', enum: Role, default: Role.User })
-  role: Role;
-
   @OneToMany(() => CommentLikeEntity, (commentLike) => commentLike.user, {
     nullable: true,
     onDelete: 'CASCADE',
@@ -67,10 +64,13 @@ export class UserEntity {
   @JoinColumn({ name: 'comments_like' })
   comments_like: CommentLikeEntity[];
 
+  @ManyToOne(() => Role, (role) => role.user)
+  role: Role;
   @OneToMany(() => AudioEntity, (audio) => audio.user, {
     nullable: true,
     onDelete: 'CASCADE',
   })
+
   @JoinColumn({ name: 'audios_id' })
   audio: AudioEntity[];
 }
