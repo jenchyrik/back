@@ -7,7 +7,11 @@ import { CategoriesController } from './categories.controller';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [JwtModule, ConfigModule, TypeOrmModule.forFeature([CategoryEntity])],
+  imports: [
+    JwtModule,
+    ConfigModule,
+    TypeOrmModule.forFeature([CategoryEntity]),
+  ],
   providers: [CategoriesService],
   controllers: [CategoriesController],
 })

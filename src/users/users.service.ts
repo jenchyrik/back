@@ -21,7 +21,12 @@ export class UsersService {
   ) {
     this.hashSaltRounds = parseInt(process.env.HASH_SALT_ROUNDS);
   }
-
+  // async findById(id: number) {
+  //   return this.repository.findOneBy({ id });
+  // }
+  async findById(id: number) {
+    return this.repository.findOne({ where: { id } });
+  }
   async create(dto: CreateUserDto): Promise<UserEntity> {
     const existingUser = await this.findByEmail(dto.email);
 
@@ -40,6 +45,7 @@ export class UsersService {
     const user = await this.repository.save({
       email: dto.email,
       username: dto.username,
+      name: dto.name,
       password: hashedPassword,
       // password: dto.password,
     });

@@ -16,20 +16,21 @@ import { Roles } from 'src/decorators/role.decorator';
 import { RolesGuard } from 'src/auth/guards/role.guard';
 
 @ApiBearerAuth('token')
-@Roles('admin')
-@UseGuards(RolesGuard)
+@UseGuards(JwtAuthGuard)
 @ApiTags('categories')
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.createCategory(createCategoryDto);
   }
 
   @Get()
-   findAllCategories() {
+  findAllCategories() {
     return this.categoriesService.findAllCategories();
   }
 
@@ -39,6 +40,8 @@ export class CategoriesController {
   }
 
   @Delete('category/:categoryId')
+  @Roles('admin')
+  @UseGuards(RolesGuard)
   remove(@Param('categoryId') categoryId: string) {
     return this.categoriesService.remove(+categoryId);
   }

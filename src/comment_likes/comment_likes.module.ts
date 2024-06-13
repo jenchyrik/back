@@ -7,7 +7,11 @@ import { CommentLikeEntity } from './entities/comment_like.entity';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [JwtModule, ConfigModule, TypeOrmModule.forFeature([CommentLikeEntity])],
+  imports: [
+    JwtModule,
+    ConfigModule,
+    TypeOrmModule.forFeature([CommentLikeEntity]),
+  ],
   providers: [CommentLikesService],
   controllers: [CommentLikesController],
 })

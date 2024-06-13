@@ -26,7 +26,6 @@ import { RolesGuard } from 'src/auth/guards/role.guard';
 
 @ApiTags('promo')
 @Controller('promo')
-
 export class PromoController {
   constructor(private readonly promoService: PromoService) {}
   @ApiBearerAuth('token')

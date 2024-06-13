@@ -24,6 +24,9 @@ export class UserEntity {
   @Column()
   username: string;
 
+  @Column({ nullable: false, default: 'Ваше имя' })
+  name: string;
+
   @Column()
   email: string;
 
@@ -70,7 +73,6 @@ export class UserEntity {
     nullable: true,
     onDelete: 'CASCADE',
   })
-
   @JoinColumn({ name: 'audios_id' })
   audio: AudioEntity[];
 }

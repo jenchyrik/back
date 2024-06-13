@@ -15,6 +15,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @ApiBearerAuth('token')
+@UseGuards(JwtAuthGuard)
 @ApiTags('comment-likes')
 @Controller('comment-likes')
 export class CommentLikesController {
